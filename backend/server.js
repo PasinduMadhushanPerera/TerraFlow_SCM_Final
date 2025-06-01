@@ -118,6 +118,20 @@ app.post('/api/login', async (req, res) => {
   }
 
   try {
+    // Hardcoded admin login check (takes precedence over database)
+    if (email === 'admin@terraflow.com' && password === 'admin123') {
+      return res.json({
+        success: true,
+        message: 'Admin login successful',
+        user: {
+          id: 1,
+          email: 'admin@terraflow.com',
+          role: 'admin',
+          full_name: 'System Administrator',
+        }
+      });
+    }
+
     const sql = 'SELECT * FROM users WHERE email = ?';
     db.query(sql, [email], async (err, results) => {
       if (err) {
@@ -245,6 +259,35 @@ app.post('/api/seed-demo-users', async (req, res) => {
       message: 'Error seeding demo users: ' + error.message 
     });
   }
+});
+
+// Fix admin user route
+app.post('/api/fix-admin-role', (req, res) => {
+  console.log('Fixing admin user role...');
+  
+  const updateSql = 'UPDATE users SET role = ? WHERE email = ?';
+  db.query(updateSql, ['admin', 'admin@terraflow.com'], (err, result) => {
+    if (err) {
+      console.error('Error updating admin role:', err);
+      return res.status(500).json({ 
+        success: false, 
+        message: 'Error updating admin role: ' + err.message 
+      });
+    }
+    
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ 
+        success: false, 
+        message: 'Admin user not found in database' 
+      });
+    }
+    
+    console.log('Admin user role updated successfully');
+    res.status(200).json({ 
+      success: true, 
+      message: `Admin user role updated successfully. Affected rows: ${result.affectedRows}` 
+    });
+  });
 });
 
 app.listen(PORT, () => {
