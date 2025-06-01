@@ -93,11 +93,35 @@ export const AuthProvider: React.FC<{
   };
   const register = async (userData: any): Promise<boolean> => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1500));
-    // Mock registration success
-    setIsLoading(false);
-    return true;
+    try {
+      console.log('Sending registration request:', userData);
+      
+      const response = await fetch('http://localhost:5000/api/register', {
+        method: 'POST',
+        headers: { 
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ 
+          ...userData, 
+          termsAccepted: true 
+        })
+      });
+
+      const data = await response.json();
+      setIsLoading(false);
+      
+      if (!response.ok) {
+        console.error('Registration failed:', data.message);
+        throw new Error(data.message || 'Registration failed');
+      }
+      
+      console.log('Registration successful:', data);
+      return data.success;
+    } catch (error: any) {
+      console.error('Registration error:', error);
+      setIsLoading(false);
+      throw error;
+    }
   };
   return <AuthContext.Provider value={{
     user,
