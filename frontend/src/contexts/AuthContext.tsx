@@ -9,7 +9,7 @@ interface User {
 }
 interface AuthContextType {
   user: User | null;
-  login: (username: string, password: string) => Promise<boolean>;
+  login: (email: string, password: string) => Promise<boolean>;
   logout: () => void;
   register: (userData: any) => Promise<boolean>;
   isLoading: boolean;
@@ -37,55 +37,45 @@ export const AuthProvider: React.FC<{
     }
     setIsLoading(false);
   }, []);
-  const login = async (username: string, password: string): Promise<boolean> => {
+  const login = async (email: string, password: string): Promise<boolean> => {
     setIsLoading(true);
-    // Simulate API call
-    await new Promise(resolve => setTimeout(resolve, 1000));
-    // Hardcoded admin login
-    if (username === 'admin' && password === 'admin123') {
-      const adminUser: User = {
-        id: 'admin-1',
-        username: 'admin',
-        email: 'admin@terraflow.com',
-        role: 'admin',
-        fullName: 'System Administrator'
-      };
-      setUser(adminUser);
-      localStorage.setItem('terraflow_user', JSON.stringify(adminUser));
+    
+    try {
+      // Make API call to backend for authentication
+      const response = await fetch('http://localhost:5000/api/login', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ email, password }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.success) {
+        const user: User = {
+          id: result.user.id.toString(),
+          username: result.user.full_name,
+          email: result.user.email,
+          role: result.user.role,
+          fullName: result.user.full_name,
+          isApproved: true
+        };
+        
+        setUser(user);
+        localStorage.setItem('terraflow_user', JSON.stringify(user));
+        setIsLoading(false);
+        return true;
+      } else {
+        console.error('Login failed:', result.message);
+        setIsLoading(false);
+        return false;
+      }
+    } catch (error) {
+      console.error('Login error:', error);
       setIsLoading(false);
-      return true;
+      return false;
     }
-    // Mock customer login
-    if (username === 'customer' && password === 'customer123') {
-      const customerUser: User = {
-        id: 'customer-1',
-        username: 'customer',
-        email: 'customer@example.com',
-        role: 'customer',
-        fullName: 'John Customer'
-      };
-      setUser(customerUser);
-      localStorage.setItem('terraflow_user', JSON.stringify(customerUser));
-      setIsLoading(false);
-      return true;
-    }
-    // Mock supplier login
-    if (username === 'supplier' && password === 'supplier123') {
-      const supplierUser: User = {
-        id: 'supplier-1',
-        username: 'supplier',
-        email: 'supplier@example.com',
-        role: 'supplier',
-        fullName: 'Clay Supplier Co.',
-        isApproved: true
-      };
-      setUser(supplierUser);
-      localStorage.setItem('terraflow_user', JSON.stringify(supplierUser));
-      setIsLoading(false);
-      return true;
-    }
-    setIsLoading(false);
-    return false;
   };
   const logout = () => {
     setUser(null);
