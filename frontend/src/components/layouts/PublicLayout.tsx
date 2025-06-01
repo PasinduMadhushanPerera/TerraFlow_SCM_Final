@@ -7,11 +7,13 @@ const {
   Content
 } = Layout;
 export const PublicLayout: React.FC = () => {
-  return <Layout className="min-h-screen">
+  return (
+    <Layout className="min-h-screen">
       <PublicNavbar />
-      <Content className="flex-1">
+      <Content className="flex-1 pt-16">
         <Outlet />
       </Content>
       <Footer />
-    </Layout>;
+    </Layout>
+  );
 };
