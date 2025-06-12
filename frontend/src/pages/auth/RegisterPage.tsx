@@ -31,11 +31,9 @@ export const RegisterPage: React.FC = () => {
     }
     setLoading(true);
     try {
-      const formData = { ...values, role: userRole };
-
-      // If role is supplier, append document file info
-      if (userRole === 'supplier' && values.businessDocument?.file) {
-        formData.businessDocument = values.businessDocument.file;
+      const formData = { ...values, role: userRole };      // If role is supplier, append document file info
+      if (userRole === 'supplier' && values.businessDocument?.length > 0) {
+        formData.businessDocument = values.businessDocument[0].name;
       }
 
       console.log('Submitting registration data:', formData);
@@ -150,13 +148,17 @@ export const RegisterPage: React.FC = () => {
         rules={[{ required: true, message: 'Please input your business address!' }]}
       >
         <Input.TextArea rows={3} placeholder="Enter your business address" className="rounded-lg" />
-      </Form.Item>
-      <Form.Item
+      </Form.Item>      <Form.Item
         name="businessDocument"
         label="Business Registration Document"
         rules={[{ required: true, message: 'Please upload your business registration document!' }]}
-        valuePropName="file"
-        getValueFromEvent={(e) => (Array.isArray(e) ? e : e && e.fileList)}
+        valuePropName="fileList"
+        getValueFromEvent={(e) => {
+          if (Array.isArray(e)) {
+            return e;
+          }
+          return e && e.fileList;
+        }}
       >
         <Upload beforeUpload={() => false} maxCount={1} className="w-full">
           <Button icon={<UploadOutlined />} className="w-full h-11 rounded-lg border-dashed">

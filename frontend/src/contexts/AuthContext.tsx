@@ -80,8 +80,7 @@ export const AuthProvider: React.FC<{
   const logout = () => {
     setUser(null);
     localStorage.removeItem('terraflow_user');
-  };
-  const register = async (userData: any): Promise<boolean> => {
+  };  const register = async (userData: any): Promise<boolean> => {
     setIsLoading(true);
     try {
       console.log('Sending registration request:', userData);
@@ -110,6 +109,12 @@ export const AuthProvider: React.FC<{
     } catch (error: any) {
       console.error('Registration error:', error);
       setIsLoading(false);
+      
+      // Check if it's a network error
+      if (error.name === 'TypeError' && error.message.includes('fetch')) {
+        throw new Error('Unable to connect to server. Please ensure the backend server is running on port 5000.');
+      }
+      
       throw error;
     }
   };
