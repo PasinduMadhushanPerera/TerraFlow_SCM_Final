@@ -5,7 +5,6 @@ import {
   Button, 
   Space, 
   Tag, 
-  Modal, 
   Switch, 
   message, 
   Input,
@@ -216,11 +215,10 @@ export const UserManagement: React.FC = () => {
       dataIndex: 'created_at',
       key: 'created_at',
       render: (date: string) => new Date(date).toLocaleDateString(),
-    },
-    {
+    },    {
       title: 'Actions',
       key: 'actions',
-      render: (_, record: User) => (
+      render: (_: any, record: User) => (
         <Space>
           <Button
             type="primary"

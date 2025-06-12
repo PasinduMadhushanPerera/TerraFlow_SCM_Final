@@ -24,7 +24,6 @@ import {
   EditOutlined,
   DeleteOutlined,
   WarningOutlined,
-  ShoppingCartOutlined,
   DollarOutlined,
   InboxOutlined,
   AlertOutlined
@@ -198,11 +197,10 @@ export const InventoryManagement: React.FC = () => {
       key: 'price',
       render: (price: number) => `$${price.toFixed(2)}`,
       sorter: (a: Product, b: Product) => a.price - b.price,
-    },
-    {
+    },    {
       title: 'Stock',
       key: 'stock',
-      render: (_, record: Product) => (
+      render: (_: any, record: Product) => (
         <div>
           <div style={{ marginBottom: '4px' }}>
             <Text strong>{record.stock_quantity}</Text> {record.unit}
@@ -219,11 +217,10 @@ export const InventoryManagement: React.FC = () => {
         </div>
       ),
       sorter: (a: Product, b: Product) => a.stock_quantity - b.stock_quantity,
-    },
-    {
+    },    {
       title: 'Status',
       key: 'status',
-      render: (_, record: Product) => getStockTag(record.stock_quantity, record.minimum_stock),
+      render: (_: any, record: Product) => getStockTag(record.stock_quantity, record.minimum_stock),
       filters: [
         { text: 'Critical', value: 'critical' },
         { text: 'Low Stock', value: 'low' },
@@ -231,18 +228,17 @@ export const InventoryManagement: React.FC = () => {
       ],
       onFilter: (value: any, record: Product) => 
         getStockStatus(record.stock_quantity, record.minimum_stock) === value,
-    },
-    {
+    },    {
       title: 'Inventory Value',
       key: 'value',
-      render: (_, record: Product) => `$${(record.price * record.stock_quantity).toFixed(2)}`,
+      render: (_: any, record: Product) => `$${(record.price * record.stock_quantity).toFixed(2)}`,
       sorter: (a: Product, b: Product) => 
         (a.price * a.stock_quantity) - (b.price * b.stock_quantity),
     },
     {
       title: 'Actions',
       key: 'actions',
-      render: (_, record: Product) => (
+      render: (_: any, record: Product) => (
         <Space>
           <Button
             type="primary"

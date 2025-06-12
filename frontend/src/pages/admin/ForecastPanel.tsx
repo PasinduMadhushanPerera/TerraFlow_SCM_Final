@@ -151,12 +151,11 @@ export const ForecastPanel: React.FC = () => {
           </Tag>
         </Tooltip>
       ),
-    },
-    {
+    },    {
       title: 'Priority',
       dataIndex: 'priority',
       key: 'priority',
-      render: (priority) => {
+      render: (priority: 'Urgent' | 'Medium' | 'Low') => {
         const config = {
           Urgent: { color: 'red', icon: <AlertOutlined /> },
           Medium: { color: 'orange', icon: <WarningOutlined /> },

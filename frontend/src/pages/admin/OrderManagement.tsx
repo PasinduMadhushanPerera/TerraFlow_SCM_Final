@@ -22,12 +22,9 @@ import {
   DollarOutlined,
   CheckCircleOutlined,
   ClockCircleOutlined,
-  EyeOutlined,
-  EditOutlined,
-  FilterOutlined,
+  EyeOutlined,  FilterOutlined,
   SearchOutlined
 } from '@ant-design/icons';
-import { RangePickerProps } from 'antd/es/date-picker';
 import dayjs from 'dayjs';
 
 const { Title, Text } = Typography;
@@ -180,9 +177,8 @@ export const OrderManagement: React.FC = () => {
       sorter: (a: Order, b: Order) => a.id - b.id,
     },
     {
-      title: 'Customer',
-      key: 'customer',
-      render: (_, record: Order) => (
+      title: 'Customer',      key: 'customer',
+      render: (_: any, record: Order) => (
         <div>
           <div style={{ fontWeight: 'bold' }}>{record.customer_name}</div>
           <div style={{ fontSize: '12px', color: '#666' }}>
@@ -231,9 +227,8 @@ export const OrderManagement: React.FC = () => {
       sorter: (a: Order, b: Order) => dayjs(a.created_at).unix() - dayjs(b.created_at).unix(),
     },
     {
-      title: 'Actions',
-      key: 'actions',
-      render: (_, record: Order) => (
+      title: 'Actions',      key: 'actions',
+      render: (_: any, record: Order) => (
         <Space>
           <Button
             type="primary"
@@ -376,11 +371,10 @@ export const OrderManagement: React.FC = () => {
               <Option value="cancelled">Cancelled</Option>
             </Select>
           </Col>
-          <Col xs={24} sm={6}>
-            <RangePicker
+          <Col xs={24} sm={6}>            <RangePicker
               style={{ width: '100%' }}
               value={dateRange}
-              onChange={(dates) => setDateRange(dates)}
+              onChange={(dates) => setDateRange(dates as [dayjs.Dayjs, dayjs.Dayjs] | null)}
               placeholder={['Start Date', 'End Date']}
             />
           </Col>
